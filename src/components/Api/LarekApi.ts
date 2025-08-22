@@ -1,4 +1,4 @@
-import { IApi, IProduct, IOrder, IOrderResult } from "../../types/index.ts";
+import { IApi, IProduct, IOrder, IOrderResult } from "../../types/index";
 
 export class LarekApi {
   private api: IApi;

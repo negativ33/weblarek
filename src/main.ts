@@ -4,7 +4,8 @@ import { Products } from "./components/Models/Products";
 import { Cart } from "./components/Models/Cart";
 import { Buyer } from "./components/Models/Buyer";
 import { Api } from "./components/base/Api";
-import { LarekApi } from "./components/Api/LarekApi.ts";
+import { LarekApi } from "./components/Api/LarekApi";
+import { API_URL } from "./utils/constants";
 
 const productsModel = new Products();
 productsModel.setItems(apiProducts.items);
@@ -28,7 +29,7 @@ console.log("Покупатель:", buyer.getData(), "валидность:", b
 const productsModel2 = new Products();
 
 
-const api = new Api("https://larek-api.nomoreparties.co");
+const api = new Api(API_URL);
 
 const larekApi = new LarekApi(api);
 
