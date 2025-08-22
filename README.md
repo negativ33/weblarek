@@ -170,7 +170,68 @@ Presenter - презентер содержит основную логику п
 `clear(): void` - очистка данных покупателя.
 `validate(): boolean` - валидация данных.
 
+### Слой представления (View)
+
+Отвечает за отображение данных на странице. Представления ничего не знают о бизнес-логике, они только показывают данные и генерируют события при действиях пользователя.
+
+#### Класс ProductView
+Задача: отображение каталога и деталей товара.
+
+Поля:
+- `container: HTMLElement` — элемент для рендера каталога.
+
+Методы:
+- `render(products: IProduct[]): void` — отрисовка списка товаров.
+- `renderModal(product: IProduct): void` — отображение модального окна с подробной информацией.
+- `bindBuyButton(callback: (product: IProduct) => void): void` — обработка кнопки «Купить».
+- `bindRemoveButton(callback: (product: IProduct) => void): void` — обработка кнопки «Удалить из корзины».
+
+---
+
+#### Класс CartView
+Задача: отображение содержимого корзины.
+
+Поля:
+- `container: HTMLElement` — элемент для корзины.
+
+Методы:
+- `render(cartItems: IProduct[]): void` — вывод списка товаров в корзине.
+- `renderTotal(total: number): void` — отображение общей суммы.
+- `bindRemoveItem(callback: (product: IProduct) => void): void` — обработка удаления товара.
+- `bindCheckout(callback: () => void): void` — кнопка оформления заказа.
+
+---
+
+#### Класс BuyerView
+Задача: отображение формы покупателя.
+
+Поля:
+- `container: HTMLElement` — элемент формы.
+
+Методы:
+- `renderForm(buyer: IBuyer): void` — отображение формы с текущими данными.
+- `bindSubmit(callback: (buyer: IBuyer) => void): void` — обработка отправки формы.
+- `showError(field: keyof IBuyer, message: string): void` — отображение ошибок валидации.
+
+---
+
+### Слой Presenter
+Задача: связывать Model и View.  
+Обрабатывает события, приходящие от моделей и представлений, и вызывает соответствующие методы.  
+
+Примеры обязанностей Presenter:
+- При выборе товара в каталоге вызывает `Products.setSelected()` и отображает его через `ProductView.renderModal()`.
+- При добавлении товара в корзину вызывает `Cart.addItem()` и обновляет `CartView.render()`.
+- При оформлении заказа собирает данные из `Buyer` и отправляет их через `LarekApi.sendOrder()`.
+
+
+
 ## Слой коммуникации
+cart:add — добавление товара в корзину.
+cart:remove — удаление товара из корзины.
+product:selected — выбор товара для подробного просмотра.
+order:submit — отправка данных заказа на сервер.
+buyer:updated — обновление данных покупателя.
 
 #### класс LarekApi
 Класс твечает за взаимодействие с сервером.
