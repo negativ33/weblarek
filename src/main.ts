@@ -8,49 +8,43 @@ import { LarekApi } from "./components/Api/LarekApi";
 import { API_URL } from "./utils/constants";
 
 const productsModel = new Products();
-productsModel.setItems(apiProducts.items);
-console.log("Каталог:", productsModel.getItems());
-
 const cart = new Cart();
-cart.addItem(apiProducts.items[0]);
-console.log("Корзина:", cart.getItems());
-
 const buyer = new Buyer();
-buyer.setData({
-  payment: "card",
-  email: "test@test.com",
-  phone: "1234567890",
-  address: "Москва"
-});
-console.log("Покупатель:", buyer.getData(), "валидность:", buyer.validate());
-
-
-
-const productsModel2 = new Products();
-
-
 const api = new Api(API_URL);
-
 const larekApi = new LarekApi(api);
 
+productsModel.setItems(apiProducts.items);
+console.log("Каталог:", productsModel.getItems());
+console.log("Товар по id", productsModel.getById(apiProducts.items[2].id));
+productsModel.setSelected(apiProducts.items[3]);
+console.log("Выбранная карточка", productsModel.getSelected())
+
+
+console.log("Пустая корзина:", cart.getItems(), "Кол-во:", cart.getCount(), "Сумма:", cart.getTotal());
+cart.addItem(apiProducts.items[3]);
+cart.addItem(apiProducts.items[1])
+console.log("Корзина после добавления товара:", cart.getItems(), "Кол-во:", cart.getCount(), "Сумма:", cart.getTotal());
+console.log("Есть ли товар в корзине c айди:", apiProducts.items[1].id, cart.hasItem(apiProducts.items[1].id))
+cart.removeItem(apiProducts.items[1]);
+console.log("Корзина после удаления 1 товара:", cart.getItems(), "Кол-во:", cart.getCount(), "Сумма:", cart.getTotal())
+cart.clear()
+console.log("Корзина после полной отчистки:", cart.getItems, "Кол-во:", cart.getCount(), "Сумма:", cart.getTotal())
+
+
+buyer.setAddress("Москва");
+buyer.setEmail("test123@test.ru");
+buyer.setPhone("79111111111")
+buyer.setPayment("card")
+console.log("Данные покупателя:", buyer.getData());
+console.log("Проверка данных покупателя:",
+"Email:", buyer.isEmailValid(),"Phone:", buyer.isPhoneValid(),"Address:", buyer.isAddressValid(),"Payment:", buyer.isPaymentValid())
+buyer.clearData();
+console.log("Данные плкупателя после отчистки", buyer.getData());
 
 larekApi.getProducts()
   .then((products) => {
-    productsModel2.setItems(products);
-    console.log("Каталог с сервера:", productsModel2.getItems());
-
-    const cart = new Cart();
-    cart.addItem(products[0]); 
-    console.log("Корзина:", cart.getItems());
-
-    const buyer = new Buyer();
-    buyer.setData({
-      payment: "card",
-      email: "test@test.com",
-      phone: "1234567890",
-      address: "Москва"
-    });
-    console.log("Покупатель:", buyer.getData(), "валидность:", buyer.validate());
+    productsModel.setItems(products);
+    console.log("Каталог с сервера:", productsModel.getItems());
   })
   .catch((err) => {
     console.error("Ошибка загрузки товаров:", err);

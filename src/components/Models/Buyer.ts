@@ -1,22 +1,72 @@
-import { IBuyer } from "../../types/index.ts";
+import { IBuyer, TPayment } from "../../types/index.ts";
 
 export class Buyer {
-  private data: IBuyer | null = null;
+  private payment: TPayment | "";
+  private email: string;
+  private phone: string;
+  private address: string;
 
-  setData(data: IBuyer): void {
-    this.data = data;
+  constructor() {
+    this.payment = "";
+    this.email = "";
+    this.phone = "";
+    this.address = "";
+  };
+
+  setPayment(payment: TPayment | ""): void {
+    this.payment = payment;
+  };
+
+  setEmail(email: string): void {
+    this.email = email;
+  };
+
+  setPhone(phone: string): void {
+    this.phone = phone;
+  };
+
+  setAddress(address: string): void {
+    this.address = address;
   }
 
-  getData(): IBuyer | null {
-    return this.data;
+  getData(): IBuyer {
+    return {
+      payment: this.payment as TPayment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+    }
   }
 
-  clear(): void {
-    this.data = null;
+  clearData(): void {
+    this.payment = "";
+    this.email = "";
+    this.phone = "";
+    this.address = "";
   }
 
-  validate(): boolean {
-    if (!this.data) return false;
-    return !!(this.data.email && this.data.phone && this.data.address && this.data.payment);
+  isEmailValid(): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email);
   }
+
+  isPhoneValid(): boolean {
+    return /^\d{10,15}$/.test(this.phone);
+  }
+
+  isAddressValid(): boolean {
+    return this.address.trim().length >= 5;
+  }
+
+  isPaymentValid(): boolean {
+    return this.payment === "card" || this.payment === "cash";
+  }
+
+  checkData(): boolean {
+  return (
+    this.isEmailValid() &&
+    this.isPhoneValid() &&
+    this.isAddressValid() &&
+    this.isPaymentValid()
+  );
+}
 }
