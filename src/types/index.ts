@@ -32,3 +32,20 @@ export interface IOrderResult {
   id: string;
   total: number;
 }
+
+export interface IProductsResponse {
+  total: number;
+  items: IProduct[];
+}
+
+export interface ICartAction {
+  id:string;
+}
+export interface IOrderForm {
+  payment:"online" | "cash";
+  address:string;
+}
+export interface IContactsForm{
+  email:string;
+  phone:string;
+}
