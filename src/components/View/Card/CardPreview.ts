@@ -30,7 +30,7 @@ export class CardPreview extends Card<ICardPreview> {
 
     this.productButton.addEventListener('click', () => {
       if (this.productInBasket) {
-      this.events.emit("cart:removeFromBasket", { id: this.productId });
+      this.events.emit("cart:removeFromBasket", { id: this.productId, fromPreview: true});
     } else {
       this.events.emit("cart:addToBasket", { id: this.productId });
     }

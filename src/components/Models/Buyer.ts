@@ -18,22 +18,22 @@ export class Buyer {
 
   setPayment(payment: TPayment | ""): void {
     this.payment = payment;
-    this.events.emit("buyer:changed", this.getData());
+    this.emitChange("order");
   };
 
   setEmail(email: string): void {
     this.email = email;
-    this.events.emit("buyer:changed", this.getData());
+    this.emitChange("contacts");
   };
 
   setPhone(phone: string): void {
     this.phone = phone;
-    this.events.emit("buyer:changed", this.getData());
+    this.emitChange("contacts");
   };
 
   setAddress(address: string): void {
     this.address = address;
-    this.events.emit("buyer:changed", this.getData());
+    this.emitChange("order");
   }
 
   getData(): IBuyer {
@@ -50,7 +50,8 @@ export class Buyer {
     this.email = "";
     this.phone = "";
     this.address = "";
-    this.events.emit("buyer:changed", this.getData());
+    this.emitChange("order");
+    this.emitChange("contacts");
   }
 
   isEmailValid(): boolean {
@@ -58,7 +59,8 @@ export class Buyer {
   }
 
   isPhoneValid(): boolean {
-    return /^\d{10,15}$/.test(this.phone);
+  const cleaned = this.phone.replace(/\D/g, ''); 
+  return /^\d{10,15}$/.test(cleaned);
   }
 
   isAddressValid(): boolean {
@@ -69,12 +71,30 @@ export class Buyer {
     return this.payment === "card" || this.payment === "cash";
   }
 
-  checkData(): boolean {
-  return (
-    this.isEmailValid() &&
-    this.isPhoneValid() &&
-    this.isAddressValid() &&
-    this.isPaymentValid()
-  );
-}
+  checkStepOrder(): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    if (!this.isPaymentValid()) errors.push("Выберите способ оплаты");
+    if (!this.isAddressValid()) errors.push("Укажите корректный адрес");
+    return { valid: errors.length === 0, errors };
+  }
+
+  checkStepContacts(): { valid: boolean; errors: string[] } {
+    const errors: string[] = [];
+    if (!this.isEmailValid()) errors.push("Укажите корректный email");
+    if (!this.isPhoneValid()) errors.push("Укажите корректный телефон");
+    return { valid: errors.length === 0, errors };
+  }
+
+   private emitChange(step: "order" | "contacts") {
+    this.events.emit("buyer:changed", this.getData());
+
+    let validation;
+    if (step === "order") {
+      validation = this.checkStepOrder();
+    } else {
+      validation = this.checkStepContacts();
+    }
+
+    this.events.emit("buyer:validation", validation);
+  }
 }

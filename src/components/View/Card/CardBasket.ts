@@ -20,7 +20,7 @@ export class CardBasket extends Card<ICardBasket> {
     this.deleteProductButton.addEventListener("click", () => {
       const id = this.container.dataset.id;
       if (id) {
-        this.events.emit("cart:removeFromBasket", { id: id });
+        this.events.emit("cart:removeFromBasket", { id: id, fromPreview: false });
       }
     });
 } 

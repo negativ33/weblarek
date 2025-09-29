@@ -21,15 +21,16 @@ export class FormContacts extends Form<IFormContacts> {
   }
   
   init() {
-
-    this.phoneInput.addEventListener('input', () => this.validate());
-    this.emailInput.addEventListener('input', () => this.validate());
+    this.phoneInput.addEventListener('input', () => {
+      this.events.emit('buyer:phoneChanged', { phone: this.phoneInput.value.trim() });
+    });
+    this.emailInput.addEventListener('input', () => {
+      this.events.emit('buyer:emailChanged', { email: this.emailInput.value.trim() });
+      
+    });
   }
 
-  protected isValid(): boolean {
-
-    return this.emailInput.value.trim() !== '' && this.phoneInput.value.trim() !== '';
-  }
+ 
 
   protected submit(): void {
 
@@ -37,19 +38,5 @@ export class FormContacts extends Form<IFormContacts> {
       phone: this.phoneInput.value.trim(), 
       email: this.emailInput.value.trim() 
     });
-  }
-
-  protected validate(): void {
-    const errors: string[] = [];
-
-    if (!this.emailInput.value.trim()) {
-      errors.push('Необходимо указать email');
-    }
-    if (!this.phoneInput.value.trim()) {
-      errors.push('Необходимо указать номер телефона');
-    }
-
-    this.showError(errors);
-    this.updateSubmitButton(); 
   }
 }
