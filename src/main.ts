@@ -126,8 +126,6 @@ events.on("cart:checkout", () => {
 });
 
 events.on("order:next", (data: IOrderForm) => {
-  buyerModel.setPayment(data.payment as TPayment);
-  buyerModel.setAddress(data.address);
   const renderContacts = contactsForm.render();
   modal.contentSet = renderContacts;
 });
@@ -150,8 +148,6 @@ events.on<{ valid: boolean; errors: string[] }>("buyer:validation", ({ valid, er
 });
 
 events.on("order:submit", async (data: IContactsForm) => {
-  buyerModel.setEmail(data.email);
-  buyerModel.setPhone(data.phone);
 
   const buyerData = buyerModel.getData();
 
@@ -183,7 +179,6 @@ events.on("order:submit", async (data: IContactsForm) => {
     modal.open();
     cartModel.clear();
     buyerModel.clearData();
-    header.counter = cartModel.getCount();
   } catch (error) {
     console.error("Ошибка при оформлении заказа:", error);
   }
